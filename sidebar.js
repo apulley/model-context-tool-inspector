@@ -24,6 +24,7 @@ const traceBtn = document.getElementById('traceBtn');
 const resetBtn = document.getElementById('resetBtn');
 const apiKeyBtn = document.getElementById('apiKeyBtn');
 const apiKeyInput = document.getElementById('apiKeyInput');
+const apiKeyStatus = document.getElementById('apiKeyStatus');
 const promptResults = document.getElementById('promptResults');
 const advancedSection = document.getElementById('advancedSection');
 const micBtn = document.getElementById('micBtn');
@@ -49,7 +50,7 @@ let userPromptPendingId = 0;
 let lastSuggestedUserPrompt = '';
 
 // Listen for the results coming back from content.js
-chrome.runtime.onMessage.addListener(async ({ message, tools, url, type, tabId }, sender) => {
+globalThis.chrome?.runtime?.onMessage?.addListener(async ({ message, tools, url, type, tabId }, sender) => {
   // Internal signals (e.g. contentScriptReady) are handled elsewhere.
   if (type) return;
   if (sender.frameId && sender.frameId !== 0) return;
@@ -173,11 +174,14 @@ async function initGenAI() {
   }
   localStorage.model ??= env?.model || 'gemini-3.6-flash';
   genAI = localStorage.apiKey ? new GoogleGenAI({ apiKey: localStorage.apiKey }) : undefined;
-  promptBtn.disabled = !localStorage.apiKey;
-  resetBtn.disabled = !localStorage.apiKey;
-  apiKeyBtn.textContent = localStorage.apiKey ? 'Update Gemini API key' : 'Set Gemini API key';
+  promptBtn.disabled = !genAI;
+  resetBtn.disabled = !genAI;
   apiKeyInput.value = localStorage.apiKey || '';
-  apiKeyBtn.textContent = localStorage.apiKey ? 'Save changes' : 'Save API key';
+  apiKeyBtn.textContent = genAI ? 'Save changes' : 'Save API key';
+  apiKeyStatus.textContent = genAI
+    ? 'Key saved. Gemini will verify it when you send a message.'
+    : 'Add a key to enable Send.';
+  apiKeyStatus.classList.remove('is-error');
 
   suggestUserPromptCheckbox.checked = localStorage.suggestUserPrompt !== 'false';
 }
@@ -242,7 +246,10 @@ promptBtn.onclick = async () => {
     await promptAI();
   } catch (error) {
     trace.push({ error });
-    logPrompt(`⚠️ Error: "${error}"`);
+    const response = globalThis.chrome?.tabs?.query
+      ? 'I could not get a response. Check the Gemini API key and try again.'
+      : 'Message sending is available in the installed Chrome extension.';
+    appendChatMessage('agent', response);
   }
 };
 
@@ -312,14 +319,38 @@ resetBtn.onclick = () => {
 apiKeyBtn.onclick = async () => {
   const apiKey = apiKeyInput.value.trim();
   if (!apiKey) {
+    apiKeyStatus.textContent = 'Enter a Gemini API key to enable Send.';
+    apiKeyStatus.classList.add('is-error');
     advancedSection.showPopover();
     apiKeyInput.focus();
     return;
   }
-  localStorage.apiKey = apiKey;
-  await initGenAI();
-  suggestUserPrompt();
-  advancedSection.hidePopover();
+
+  const previousApiKey = localStorage.apiKey;
+  apiKeyBtn.disabled = true;
+  apiKeyStatus.textContent = 'Saving key...';
+  apiKeyStatus.classList.remove('is-error');
+  try {
+    localStorage.apiKey = apiKey;
+    await initGenAI();
+    chat = undefined;
+    apiKeyStatus.textContent = 'Key saved. Gemini will verify it when you send a message.';
+    suggestUserPrompt();
+    advancedSection.hidePopover();
+  } catch (error) {
+    if (previousApiKey) {
+      localStorage.apiKey = previousApiKey;
+    } else {
+      localStorage.removeItem('apiKey');
+    }
+    apiKeyInput.value = apiKey;
+    promptBtn.disabled = !genAI;
+    resetBtn.disabled = !genAI;
+    apiKeyStatus.textContent = `Could not initialize Gemini: ${error.message || error}`;
+    apiKeyStatus.classList.add('is-error');
+  } finally {
+    apiKeyBtn.disabled = false;
+  }
 };
 
 traceBtn.onclick = async () => {
