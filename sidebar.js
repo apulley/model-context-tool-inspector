@@ -4,6 +4,7 @@
  */
 
 import { GoogleGenAI } from './js-genai.js';
+import { renderMarkdown } from './markdown-renderer.bundle.js';
 import { initGeminiLive, updateLiveTools } from './gemini-live.js';
 import { getAllFrameOrigins } from './utils.js';
 
@@ -437,7 +438,12 @@ function appendChatMessage(role, text) {
   let content;
   if (message?.dataset.role === role) {
     content = message.querySelector('.chat-text');
-    content.textContent += role === 'user' ? ` ${messageText}` : messageText;
+    if (role === 'agent') {
+      content.dataset.markdown = (content.dataset.markdown || '') + messageText;
+      content.innerHTML = renderMarkdown(content.dataset.markdown);
+    } else {
+      content.textContent += ` ${messageText}`;
+    }
   } else {
     message = document.createElement('div');
     message.className = `chat-message ${role}`;
@@ -449,7 +455,12 @@ function appendChatMessage(role, text) {
 
     content = document.createElement('div');
     content.className = 'chat-text';
-    content.textContent = messageText;
+    if (role === 'agent') {
+      content.dataset.markdown = messageText;
+      content.innerHTML = renderMarkdown(messageText);
+    } else {
+      content.textContent = messageText;
+    }
     message.append(label, content);
     promptResults.appendChild(message);
   }

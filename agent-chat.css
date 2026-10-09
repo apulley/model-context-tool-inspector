@@ -71,10 +71,11 @@ body {
 .chat-message {
   max-width: 88%;
   padding: 10px 12px;
-  border: 1px solid #e0e7f0;
+  border: 1px solid #414141;
   border-radius: 14px 14px 14px 4px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgb(31 54 84 / 6%);
+  background: #222222;
+  box-shadow: 0 2px 5px rgb(31 54 84 / 8%);
+  color: #fff;
   font-size: 0.8125rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -82,27 +83,123 @@ body {
 
 .chat-message.user {
   align-self: flex-end;
-  border-color: #c6d9f0;
+  border-color: #0557bb;
   border-radius: 14px 14px 4px 14px;
-  background: #dce9f8;
-  color: #1b3b63;
+  background: #0557bb;
+  color: #fff;
 }
 
 .chat-message.agent {
   align-self: flex-start;
-  color: #27364a;
 }
 
 .chat-role {
   display: block;
   margin-bottom: 4px;
-  color: #6b7c93;
+  color: #e0e8f3;
   font-size: 0.6875rem;
   font-weight: 600;
 }
 
 .chat-text {
   white-space: pre-wrap;
+}
+
+.chat-text > :first-child {
+  margin-top: 0;
+}
+
+.chat-text > :last-child {
+  margin-bottom: 0;
+}
+
+.chat-text p,
+.chat-text ul,
+.chat-text ol,
+.chat-text blockquote,
+.chat-text pre,
+.chat-text table,
+.chat-text hr {
+  margin-top: 0.55em;
+  margin-bottom: 0.55em;
+}
+
+.chat-text h1,
+.chat-text h2,
+.chat-text h3,
+.chat-text h4,
+.chat-text h5,
+.chat-text h6 {
+  margin: 0.8em 0 0.35em;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.chat-text ul,
+.chat-text ol {
+  padding-left: 1.35em;
+}
+
+.chat-text li + li {
+  margin-top: 0.2em;
+}
+
+.chat-text a {
+  color: #a9d2ff;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
+.chat-text blockquote {
+  padding-left: 0.75em;
+  border-left: 3px solid #8eb7e9;
+  color: #d0dced;
+}
+
+.chat-text pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 10px;
+  border-radius: 7px;
+  background: #edf2f8;
+  color: #1b293b;
+  font-size: 0.75rem;
+}
+
+.chat-text code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: #edf2f8;
+  color: #1b293b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.chat-text pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.chat-text table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.chat-text th,
+.chat-text td {
+  padding: 5px 8px;
+  border: 1px solid #d5dfeb;
+  text-align: left;
+}
+
+.chat-text th {
+  background: #e8eef6;
+  color: #1b293b;
+  font-weight: 600;
 }
 
 .assistant-composer {
@@ -140,7 +237,8 @@ body {
   resize: vertical;
 }
 
-#userPromptText:focus {
+#userPromptText:focus,
+.api-key-input:focus {
   border-color: #75a9e8;
   box-shadow: 0 0 0 3px rgb(86 143 213 / 16%);
   outline: none;
@@ -320,12 +418,6 @@ dialog {
   font-size: 0.8125rem;
 }
 
-.api-key-input:focus {
-  border-color: #75a9e8;
-  box-shadow: 0 0 0 3px rgb(86 143 213 / 16%);
-  outline: none;
-}
-
 .secondary {
   padding: 7px 9px;
   border: 1px solid #9bb8dc;
@@ -380,32 +472,69 @@ dialog {
   }
 
   .chat-message.agent {
-    border-color: #34445c;
-    background: #1c293a;
-    color: #e2eaf4;
+    border-color: #414141;
+    background: #222222;
+    color: #fff;
   }
 
   .chat-message.user {
-    border-color: #3a5b83;
-    background: #213c60;
-    color: #dce9f8;
+    border-color: #0557bb;
+    background: #0557bb;
+    color: #fff;
   }
 
   .chat-role {
+    color: #e0e8f3;
+  }
+
+  .chat-text h1,
+  .chat-text h2,
+  .chat-text h3,
+  .chat-text h4,
+  .chat-text h5,
+  .chat-text h6 {
+    color: #e4edf9;
+  }
+
+  .chat-text a {
+    color: #9bc4f4;
+  }
+
+  .chat-text blockquote {
+    border-color: #5878a1;
     color: #a7bad3;
   }
 
-  #userPromptText {
+  .chat-text pre,
+  .chat-text code {
+    background: #25364e;
+    color: #e2eaf4;
+  }
+
+  .chat-text th,
+  .chat-text td {
+    border-color: #34445c;
+  }
+
+  .chat-text th {
+    background: #25364e;
+    color: #e2eaf4;
+  }
+
+  #userPromptText,
+  .api-key-input {
     border-color: #34455d;
     background: #172336;
     color: #e2eaf4;
   }
 
-  #userPromptText:focus {
+  #userPromptText:focus,
+  .api-key-input:focus {
     border-color: #6da5e8;
   }
 
-  #userPromptText::placeholder {
+  #userPromptText::placeholder,
+  .api-key-input::placeholder {
     color: #8d9eb5;
   }
 
@@ -435,18 +564,9 @@ dialog {
     color: #e2eaf4;
   }
 
-  .menu-label {
-    color: #9cacc1;
-  }
-
+  .menu-label,
   .api-key-label {
-    color: #d5e0ef;
-  }
-
-  .api-key-input {
-    border-color: #34455d;
-    background: #172336;
-    color: #e2eaf4;
+    color: #9cacc1;
   }
 
   .model-option {
