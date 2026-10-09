@@ -29,6 +29,13 @@ const promptResults = document.getElementById('promptResults');
 const advancedSection = document.getElementById('advancedSection');
 const micBtn = document.getElementById('micBtn');
 const suggestUserPromptCheckbox = document.getElementById('suggestUserPromptCheckbox');
+const toolWaitIndicator = document.getElementById('toolWaitIndicator');
+const toolWaitDots = document.getElementById('toolWaitDots');
+const toolWaitStatus = document.getElementById('toolWaitStatus');
+
+let activeToolExecutions = 0;
+let toolWaitTimer;
+let toolWaitFrame = 0;
 
 // First, request list of tools from content script living in top-level frame.
 (async () => {
@@ -391,6 +398,7 @@ async function executeTool(tabId, name, inputArgs, frameId) {
     }
   };
   chrome.runtime.onMessage.addListener(listener);
+  updateToolWaitIndicator(true);
 
   try {
     try {
@@ -425,8 +433,32 @@ async function executeTool(tabId, name, inputArgs, frameId) {
       { frameId: targetTabId === tabId ? frameId : 0 },
     );
   } finally {
+    updateToolWaitIndicator(false);
     chrome.runtime.onMessage.removeListener(listener);
   }
+}
+
+function updateToolWaitIndicator(startWaiting) {
+  activeToolExecutions += startWaiting ? 1 : -1;
+  if (activeToolExecutions < 0) activeToolExecutions = 0;
+
+  if (activeToolExecutions > 0) {
+    if (activeToolExecutions === 1) {
+      toolWaitIndicator.hidden = false;
+      toolWaitStatus.textContent = 'Waiting for WebMCP tool response.';
+      toolWaitFrame = 0;
+      toolWaitDots.textContent = '.';
+      toolWaitTimer = setInterval(() => {
+        toolWaitFrame = (toolWaitFrame + 1) % 4;
+        toolWaitDots.textContent = ['.', '..', '...', '..'][toolWaitFrame];
+      }, 240);
+    }
+    return;
+  }
+
+  clearInterval(toolWaitTimer);
+  toolWaitIndicator.hidden = true;
+  toolWaitStatus.textContent = '';
 }
 
 toolNames.onchange = updateDefaultValueForInputArgs;

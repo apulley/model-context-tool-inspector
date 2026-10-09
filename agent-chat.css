@@ -57,6 +57,20 @@ body {
   font-size: 0.6875rem;
 }
 
+.tool-wait-indicator {
+  min-width: 1.5rem;
+  margin-left: auto;
+  color: #0557bb;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: right;
+}
+
+.tool-wait-indicator[hidden] {
+  display: none;
+}
+
 .chat-log {
   display: flex;
   flex: 1;
@@ -84,7 +98,7 @@ body {
 .chat-message.user {
   align-self: flex-end;
   border-color: #0557bb;
-  border-radius: 14px 14px 4px 14px;
+  border-radius: 16px 16px 1px 16px;
   background: #0557bb;
   color: #fff;
 }
@@ -98,9 +112,17 @@ body {
   box-shadow: none;
 }
 
+.chat-message.agent .chat-role {
+  display: none;
+}
+
 .chat-message.user .chat-role {
   display: block;
   text-align: right;
+}
+
+.chat-message.user .chat-text {
+  display: none;
 }
 
 .chat-role {
@@ -484,6 +506,10 @@ dialog {
 
   .assistant-heading p {
     color: #9cacc1;
+  }
+
+  .tool-wait-indicator {
+    color: #9bc4f4;
   }
 
   .chat-log {
