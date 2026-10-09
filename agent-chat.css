@@ -91,18 +91,27 @@ body {
 
 .chat-message.agent {
   align-self: flex-start;
+  max-width: 90%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.chat-message.user .chat-role {
+  display: block;
+  text-align: right;
 }
 
 .chat-role {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: #e0e8f3;
   font-size: 0.6875rem;
-  font-weight: 600;
 }
 
 .chat-text {
-  white-space: pre-wrap;
+  white-space: normal;
 }
 
 .chat-text > :first-child {
@@ -482,8 +491,11 @@ dialog {
   }
 
   .chat-message.agent {
-    border-color: #414141;
-    background: #222222;
+    max-width: 90%;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     color: #fff;
   }
 
