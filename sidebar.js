@@ -450,7 +450,7 @@ function updateToolWaitIndicator(startWaiting) {
       toolWaitDots.textContent = '.';
       toolWaitTimer = setInterval(() => {
         toolWaitFrame = (toolWaitFrame + 1) % 4;
-        toolWaitDots.textContent = ['.', '..', '...', '..'][toolWaitFrame];
+        toolWaitDots.textContent = ['.', '..', '...', '....'][toolWaitFrame];
       }, 240);
     }
     return;

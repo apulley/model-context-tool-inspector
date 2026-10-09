@@ -112,16 +112,7 @@ body {
   box-shadow: none;
 }
 
-.chat-message.agent .chat-role {
-  display: none;
-}
-
 .chat-message.user .chat-role {
-  display: block;
-  text-align: right;
-}
-
-.chat-message.user .chat-text {
   display: none;
 }
 
@@ -130,6 +121,10 @@ body {
   margin-bottom: 8px;
   color: #e0e8f3;
   font-size: 0.6875rem;
+}
+
+.chat-message.agent > .chat-role {
+  display: none;
 }
 
 .chat-text {
