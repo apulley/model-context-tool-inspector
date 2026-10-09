@@ -8,104 +8,116 @@
   <head>
     <title>Tool Inspector</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="assistant-chat.css" />
   </head>
   <body>
     <div class="container">
-      <h2 class="collapsible-header">WebMCP Tools</h2>
-      <div class="section-content">
-
-      <div id="status"></div>
-
-      <div class="table-container">
-        <table id="resultsTable">
-          <thead>
-            <tr id="tableHeaderRow"></tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-        <div id="copyToClipboard">
-          <span id="copyAsScriptToolConfig">📝 Copy as ScriptToolConfig</span>
-          <span id="copyAsJSON">📝 Copy as JSON</span>
+      <section class="tools-section">
+        <h2 class="collapsible-header">WebMCP Tools</h2>
+        <div class="section-content">
+          <div id="status"></div>
+          <div class="table-container">
+            <table id="resultsTable">
+              <thead>
+                <tr id="tableHeaderRow"></tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+            <div id="copyToClipboard">
+              <span id="copyAsScriptToolConfig">📝 Copy as ScriptToolConfig</span>
+              <span id="copyAsJSON">📝 Copy as JSON</span>
+            </div>
+          </div>
         </div>
-      </div>
-      </div>
+      </section>
 
-      <h2 class="collapsible-header">Interact with the Page</h2>
-      <div class="section-content">
+      <main class="assistant-shell">
+        <header class="assistant-header">
+          <div class="assistant-heading">
+            <h1>Agent Chat</h1>
+            <p>My Agent</p>
+          </div>
+        </header>
 
-      <div class="form-group">
-        <div class="label-with-button">
-          <label for="userPromptText">
-            User Prompt&nbsp;<button id="micBtn" title="Start Gemini Live">
-              <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-              </svg>
-              <svg class="stop-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                <path d="M6 6h12v12H6z" />
-              </svg>
+        <div id="promptResults" class="chat-log" role="log" aria-live="polite" aria-label="Conversation">
+        </div>
+
+        <section class="assistant-composer" aria-label="Message Agent Chat">
+          <div class="composer-entry">
+            <label class="visually-hidden" for="userPromptText">Message</label>
+            <textarea id="userPromptText" rows="2" placeholder="Message"></textarea>
+            <div class="composer-tools">
+              <button id="micBtn" class="composer-icon-btn" type="button" title="Start Gemini Live" aria-label="Start Gemini Live">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                </svg>
+                <svg class="stop-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                  <path d="M6 6h12v12H6z" />
+                </svg>
+              </button>
+              <button id="advancedBtn" type="button" title="Assistant settings" aria-label="Assistant settings" popovertarget="advancedSection" class="composer-icon-btn">⋯</button>
+            </div>
+          </div>
+
+          <dialog id="advancedSection" popover autofocus>
+            <div class="menu-label">Gemini model</div>
+            <label class="model-option">
+              <input type="radio" name="model" value="gemini-3-flash-preview">
+              <span>Gemini 3 Flash Preview</span>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="model" value="gemini-3.1-flash-lite">
+              <span>Gemini 3.1 Flash-Lite</span>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="model" value="gemini-3.5-flash-lite">
+              <span>Gemini 3.5 Flash-Lite</span>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="model" value="gemini-3.5-flash">
+              <span>Gemini 3.5 Flash</span>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="model" value="gemini-3.6-flash">
+              <span>Gemini 3.6 Flash</span>
+            </label>
+            <div class="menu-label">Options</div>
+            <label class="model-option">
+              <input type="checkbox" id="suggestUserPromptCheckbox">
+              <span>Suggest user prompt</span>
+            </label>
+            <div class="menu-actions">
+              <label class="api-key-label" for="apiKeyInput">Gemini API key</label>
+              <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" placeholder="Paste API key">
+              <button id="apiKeyBtn" class="secondary" type="button">Save API key</button>
+              <button id="traceBtn" class="secondary" type="button">Copy diagnostic trace</button>
+            </div>
+          </dialog>
+
+          <div class="composer-actions">
+            <button id="resetBtn" class="new-chat-btn" type="button" disabled>New chat</button>
+            <button id="promptBtn" class="send-btn" type="button" disabled>
+              <span>Send</span><span aria-hidden="true">↑</span>
             </button>
-          </label>
-          <button id="advancedBtn" title="Advanced features" popovertarget="advancedSection" class="icon-btn">︙</button>
+          </div>
+        </section>
+      </main>
+
+      <section class="tool-execution-section">
+        <div class="form-group">
+          <label for="toolNames">Tool</label>
+          <select id="toolNames"></select>
         </div>
-        <textarea id="userPromptText"></textarea>
-      </div>
-
-      <dialog id="advancedSection" popover autofocus>
-        <div class="menu-label">Gemini Model</div>
-        <label class="model-option">
-          <input type="radio" name="model" value="gemini-3-flash-preview">
-          <span>Gemini 3 Flash Preview</span>
-        </label>
-        <label class="model-option">
-          <input type="radio" name="model" value="gemini-3.1-flash-lite">
-          <span>Gemini 3.1 Flash-Lite</span>
-        </label>
-        <label class="model-option">
-          <input type="radio" name="model" value="gemini-3.5-flash-lite">
-          <span>Gemini 3.5 Flash-Lite</span>
-        </label>
-        <label class="model-option">
-          <input type="radio" name="model" value="gemini-3.5-flash">
-          <span>Gemini 3.5 Flash</span>
-        </label>
-        <label class="model-option">
-          <input type="radio" name="model" value="gemini-3.6-flash">
-          <span>Gemini 3.6 Flash</span>
-        </label>
-        <div class="menu-label">Advanced Options</div>
-        <label class="model-option">
-          <input type="checkbox" id="suggestUserPromptCheckbox">
-          <span>Suggest user prompt</span>
-        </label>
-      </dialog>
-
-      <div class="form-group">
-        <button id="promptBtn" disabled>Send</button>
-        <button id="resetBtn" class="secondary" disabled>Reset</button>
-        <button id="apiKeyBtn" class="secondary">Set Gemini API key</button>
-        <button id="traceBtn" class="secondary">Copy trace</button>
-      </div>
-
-      <pre id="promptResults"></pre>
-
-      <div class="form-group">
-        <label for="toolNames">Tool</label>
-        <select id="toolNames"></select>
-      </div>
-
-      <div class="form-group">
-        <label for="inputArgsText">Input Arguments</label>
-        <textarea id="inputArgsText">{"text": "hello world"}</textarea>
-      </div>
-
-      <div class="form-group">
-        <button id="executeBtn">Execute Tool</button>
-      </div>
-
-      <pre id="toolResults"></pre>
-      </div>
+        <div class="form-group">
+          <label for="inputArgsText">Input Arguments</label>
+          <textarea id="inputArgsText">{"text": "hello world"}</textarea>
+        </div>
+        <div class="form-group">
+          <button id="executeBtn">Execute Tool</button>
+        </div>
+        <pre id="toolResults"></pre>
+      </section>
     </div>
     <script type="module" src="sidebar.js"></script>
   </body>

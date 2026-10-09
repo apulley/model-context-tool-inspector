@@ -22,6 +22,7 @@ const promptBtn = document.getElementById('promptBtn');
 const traceBtn = document.getElementById('traceBtn');
 const resetBtn = document.getElementById('resetBtn');
 const apiKeyBtn = document.getElementById('apiKeyBtn');
+const apiKeyInput = document.getElementById('apiKeyInput');
 const promptResults = document.getElementById('promptResults');
 const advancedSection = document.getElementById('advancedSection');
 const micBtn = document.getElementById('micBtn');
@@ -174,6 +175,8 @@ async function initGenAI() {
   promptBtn.disabled = !localStorage.apiKey;
   resetBtn.disabled = !localStorage.apiKey;
   apiKeyBtn.textContent = localStorage.apiKey ? 'Update Gemini API key' : 'Set Gemini API key';
+  apiKeyInput.value = localStorage.apiKey || '';
+  apiKeyBtn.textContent = localStorage.apiKey ? 'Save changes' : 'Save API key';
 
   suggestUserPromptCheckbox.checked = localStorage.suggestUserPrompt !== 'false';
 }
@@ -252,7 +255,7 @@ async function promptAI() {
   const message = userPromptText.value;
   userPromptText.value = '';
   lastSuggestedUserPrompt = '';
-  promptResults.textContent += `User prompt: "${message}"\n`;
+  appendChatMessage('user', message);
   const sendMessageParams = { message, config: getConfig() };
   trace.push({ userPrompt: sendMessageParams });
   let currentResult = await chat.sendMessage(sendMessageParams);
@@ -301,16 +304,21 @@ resetBtn.onclick = () => {
   trace = [];
   userPromptText.value = '';
   lastSuggestedUserPrompt = '';
-  promptResults.textContent = '';
+  promptResults.replaceChildren();
   suggestUserPrompt();
 };
 
 apiKeyBtn.onclick = async () => {
-  const apiKey = prompt('Enter Gemini API key', localStorage.apiKey);
-  if (apiKey == null) return;
+  const apiKey = apiKeyInput.value.trim();
+  if (!apiKey) {
+    advancedSection.showPopover();
+    apiKeyInput.focus();
+    return;
+  }
   localStorage.apiKey = apiKey;
   await initGenAI();
   suggestUserPrompt();
+  advancedSection.hidePopover();
 };
 
 traceBtn.onclick = async () => {
@@ -411,7 +419,41 @@ initGeminiLive({
 // Utils
 
 function logPrompt(text) {
-  promptResults.textContent += `${text}\n`;
+  const userPrefix = 'User prompt: "';
+  const agentPrefix = 'AI result: ';
+
+  if (text.startsWith(userPrefix)) {
+    appendChatMessage('user', text.slice(userPrefix.length).replace(/"\s*$/, ''));
+  } else if (text.startsWith(agentPrefix)) {
+    appendChatMessage('agent', text.slice(agentPrefix.length).trim());
+  }
+}
+
+function appendChatMessage(role, text) {
+  const messageText = String(text).trim();
+  if (!messageText) return;
+
+  let message = promptResults.lastElementChild;
+  let content;
+  if (message?.dataset.role === role) {
+    content = message.querySelector('.chat-text');
+    content.textContent += role === 'user' ? ` ${messageText}` : messageText;
+  } else {
+    message = document.createElement('div');
+    message.className = `chat-message ${role}`;
+    message.dataset.role = role;
+
+    const label = document.createElement('span');
+    label.className = 'chat-role';
+    label.textContent = role === 'user' ? 'User' : 'My Agent';
+
+    content = document.createElement('div');
+    content.className = 'chat-text';
+    content.textContent = messageText;
+    message.append(label, content);
+    promptResults.appendChild(message);
+  }
+
   promptResults.scrollTop = promptResults.scrollHeight;
 }
 
