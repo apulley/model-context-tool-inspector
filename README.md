@@ -19,17 +19,16 @@ Install the extension directly via the [Chrome Web Store](https://chromewebstore
 1.  **Download the Source:**
     Clone this repository or download the source files into a directory.
 
-2.  **Install dependencies:**
-    In the directory, run `npm install`.
-
-3.  **Open Chrome Extensions:**
+2.  **Open Chrome Extensions:**
     Navigate to `chrome://extensions/` in your browser address bar.
 
-4.  **Enable Developer Mode:**
+3.  **Enable Developer Mode:**
     Toggle the **Developer mode** switch in the top right corner of the Extensions page.
 
-5.  **Load Unpacked:**
+4.  **Load Unpacked:**
     Click the **Load unpacked** button that appears in the top left. Select the directory containing `manifest.json` (the folder where you saved the files).
+
+The required JavaScript bundles are included in the repository, so no build step is needed to load the extension. Run `npm install` only when regenerating bundles after changing dependencies.
 
 ## Usage
 
