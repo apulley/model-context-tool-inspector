@@ -444,6 +444,34 @@ dialog {
   font-size: 0.8125rem;
 }
 
+.agent-instructions-label {
+  margin-top: 8px;
+  color: #314158;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.agent-instructions-input {
+  width: 100%;
+  min-height: 76px;
+  max-height: 180px;
+  padding: 8px 9px;
+  border: 1px solid #d6e0ec;
+  border-radius: 7px;
+  background: #fcfdff;
+  color: #1b293b;
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.agent-instructions-input:focus {
+  border-color: #75a9e8;
+  box-shadow: 0 0 0 3px rgb(86 143 213 / 16%);
+  outline: none;
+}
+
 .api-key-status {
   margin: 0;
   color: #64758d;
@@ -610,6 +638,20 @@ dialog {
   .menu-label,
   .api-key-label {
     color: #9cacc1;
+  }
+
+  .agent-instructions-label {
+    color: #d5e0ef;
+  }
+
+  .agent-instructions-input {
+    border-color: #34455d;
+    background: #172336;
+    color: #e2eaf4;
+  }
+
+  .agent-instructions-input:focus {
+    border-color: #6da5e8;
   }
 
   .api-key-status {

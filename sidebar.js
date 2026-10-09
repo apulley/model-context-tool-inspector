@@ -29,6 +29,7 @@ const promptResults = document.getElementById('promptResults');
 const advancedSection = document.getElementById('advancedSection');
 const micBtn = document.getElementById('micBtn');
 const suggestUserPromptCheckbox = document.getElementById('suggestUserPromptCheckbox');
+const agentInstructionsInput = document.getElementById('agentInstructionsInput');
 const toolWaitIndicator = document.getElementById('toolWaitIndicator');
 const toolWaitDots = document.getElementById('toolWaitDots');
 const toolWaitStatus = document.getElementById('toolWaitStatus');
@@ -191,8 +192,13 @@ async function initGenAI() {
   apiKeyStatus.classList.remove('is-error');
 
   suggestUserPromptCheckbox.checked = localStorage.suggestUserPrompt !== 'false';
+  agentInstructionsInput.value = localStorage.agentInstructions || '';
 }
 await initGenAI();
+
+agentInstructionsInput.oninput = () => {
+  localStorage.agentInstructions = agentInstructionsInput.value;
+};
 
 document.querySelectorAll('input[name="model"]').forEach((radio) => {
   radio.checked = radio.value === localStorage.model;
@@ -550,6 +556,10 @@ function getConfig() {
     'CRITICAL RULE: Whenever the user provides a relative date (e.g., "next Monday", "tomorrow", "in 3 days"),  you must calculate the exact calendar date based on today\'s date.',
     'CRITICAL RULE: Do not try to use other tools than the available ones.',
   ];
+  const agentInstructions = localStorage.agentInstructions?.trim();
+  if (agentInstructions) {
+    systemInstruction.push('User instructions for this assistant:', agentInstructions);
+  }
 
   const functionDeclarations = currentTools.map((tool) => {
     return {
