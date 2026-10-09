@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "WebMCP - Model Context Tool Inspector",
-  "description": "Inspect, monitor, and execute WebMCP tools manually or with Gemini",
+  "name": "WebMCP Inspector (Local UI Fork)",
+  "description": "Local UI fork for inspecting and interacting with WebMCP tools",
   "version": "1.9.19",
   "minimum_chrome_version": "150.0.7861.0",
   "permissions": ["sidePanel", "activeTab", "scripting", "webNavigation", "offscreen"],
